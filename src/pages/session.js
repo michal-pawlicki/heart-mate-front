@@ -1,15 +1,8 @@
 import React from "react";
-import { useRef, useState, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Label,
-} from "recharts";
+import { useState, useEffect, useMemo } from "react";
+import Chart from "../components/Chart";
 import io from "socket.io-client";
+import { useSocket } from "../service/socket";
 
 const Session = () => {
   const [data, setData] = useState([
@@ -24,23 +17,38 @@ const Session = () => {
 
   const [working, setWorking] = useState(false);
 
-  const windowSize = useRef([window.innerWidth, window.innerHeight]);
-  const height = windowSize.current[1];
-  const width = windowSize.current[0];
+  // const [name, setName] = useState(promps("Enter your name"));
 
   const handleReset = () => {
     setData([]);
   };
 
+  const mean = useMemo(
+    () =>
+      Math.round(
+        data.slice(0, 10).reduce((accumulator, object) => {
+          return accumulator + object.value;
+        }, 0) / 10
+      ),
+    [data]
+  );
+
+  const socket = useSocket();
+
   useEffect(() => {
-    const socket = io.connect("ws://192.168.1.55");
     if (working) {
-      socket.on("updateSensorData", function (msg) {
-        setData((previous) => [...previous, { value: msg.value }]);
+      // socket.on("updateSensorData", function (msg) {
+      //   setData((previous) => [...previous, { value: msg.value }]);
+      // });
+      socket.on("pulse", (val) => {
+        setData((previous) => [{ value: val }, ...previous]);
+        console.log(val);
       });
+      // count += 1;
+    } else {
+      socket.off("pulse");
     }
-    socket.disconnect();
-  }, [data, working]);
+  }, [working]);
 
   const handleStart = () => {
     setWorking(true);
@@ -48,50 +56,48 @@ const Session = () => {
 
   const handleStop = () => {
     setWorking(false);
+    // const sum = data.reduce((accumulator, object) => {
+    //   return accumulator + object.salary;
+    // }, 0);
+    // fetch("192.168.1.55/add_measurement", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     name: { name },
+    //     date: "19-01-2023",
+    //     value: {},
+    //   }),
+    // });
   };
 
-  return (
-    <div className="flex justify-center p-10">
-      <LineChart
-        width={width / 2}
-        height={height / 2}
-        data={data}
-        margin={{ top: 10, right: 15, bottom: 10, left: 15 }}
-      >
-        <Line type="monotone" dataKey="value" stroke="#8884d8" />
-        <CartesianGrid stroke="#ccc" />
-        <XAxis>
-          <Label
-            value="Second Of Measurement"
-            offset={-10}
-            position="insideBottom"
-          />
-        </XAxis>
-        <YAxis>
-          <Label value="Pulse" offset={-15} position="insideLeft" />
-        </YAxis>
-        <Tooltip />
-      </LineChart>
+  const color = useMemo(() => {
+    if (mean < 120) return "rgba()";
+  }, [mean]);
 
-      <div className=" flex-row   my-auto">
-        <button
-          onClick={handleStart}
-          className="border-green-500 rounded-md px-5 py-2 m-5 border-2"
-        >
-          Start
-        </button>
-        <button
-          onClick={handleStop}
-          className="rounded-md px-5 py-2 m-5 border-red-500 border-2"
-        >
-          Stop
-        </button>
-        <button
-          onClick={handleReset}
-          className="rounded-md px-5 py-2 m-5 border-violet-500 border-2"
-        >
-          Reset
-        </button>
+  return (
+    <div className="flex flex-col lg:flex-row justify-center item-center p-10">
+      <Chart data={data} />
+      <div className="flex flex-col justify-center items-center ">
+        <div className={"text-5xl md:text-6xl"}>{mean} bpm</div>
+        <div>
+          <button
+            onClick={handleStart}
+            className="border-green-500 rounded-md px-5 py-2 m-5 border-2"
+          >
+            Start
+          </button>
+          <button
+            onClick={handleStop}
+            className="rounded-md px-5 py-2 m-5 border-red-500 border-2"
+          >
+            Stop
+          </button>
+          <button
+            onClick={handleReset}
+            className="rounded-md px-5 py-2 m-5 border-violet-500 border-2"
+          >
+            Reset
+          </button>
+        </div>
       </div>
     </div>
   );
