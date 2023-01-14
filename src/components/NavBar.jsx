@@ -10,7 +10,7 @@ const NavBar = () => {
         <div className="grid grid-flow-col justify-self-end self-center gap-5">
           <Link to="/">Home</Link>
           <Link to="/browse">Browse</Link>
-          <Link to="/session">New Session</Link>
+          <Link to="/session">New Measurement</Link>
         </div>
       </div>
     </div>
