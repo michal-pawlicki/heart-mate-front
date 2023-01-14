@@ -36,11 +36,11 @@ const Session = () => {
     const socket = io.connect("ws://192.168.1.55");
     if (working) {
       socket.on("updateSensorData", function (msg) {
-        setData((previous) => [...previous, { text: msg.value }]);
+        setData((previous) => [...previous, { value: msg.value }]);
       });
     }
     socket.disconnect();
-  });
+  }, [data, working]);
 
   const handleStart = () => {
     setWorking(true);
