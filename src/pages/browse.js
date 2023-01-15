@@ -1,47 +1,59 @@
 import React from "react";
-import { useRef, useEffect, useState } from "react";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Label,
-  Legend,
-} from "recharts";
+import { useEffect, useState } from "react";
+import HistoryChart from "../components/HistoryChart";
 
 const Browse = () => {
-  const [posts, setPosts] = useState([]);
+  // const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    fetch("http://192.168.1.55/measurements")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setPosts(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://192.168.1.55/measurements")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       setPosts(data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message);
+  //     });
+  // }, []);
 
-  const windowSize = useRef([window.innerWidth, window.innerHeight]);
-  const height = windowSize.current[1];
-  const width = windowSize.current[0];
+  const posts = {
+    users: ["Jim", "Mike"],
+    data: [
+      { date: 2010, Jim: 20, Mike: 10 },
+      { date: 2011, Jim: 10, Mike: 20 },
+      { date: 2012, Jim: 11, Mike: 12 },
+    ],
+  };
+
+  const [checked, setChecked] = useState([]);
+
+  const handleChange = (event) => {
+    var updatedList = [...checked];
+    if (event.target.checked) {
+      updatedList = [...checked, event.target.value];
+    } else {
+      updatedList.splice(checked.indexOf(event.target.value), 1);
+    }
+    setChecked(updatedList);
+  };
+
   return (
-    <div className="flex justify-center p-10">
-      <LineChart width={width / 2} height={height / 2} data={posts}>
-        <CartesianGrid stroke="#ccc" />
-        <XAxis dataKey="date">
-          <Label value="Date" offset={-5} position="insideBottom" />
-        </XAxis>
-        <YAxis>
-          <Label value="Pulse" offset={-5} position="insideLeft" />
-        </YAxis>
-        <Tooltip />
-        <Legend height={36} verticalAlign={"top"} />
-      </LineChart>
+    <div className="flex flex-col lg:flex-row justify-center item-center p-10">
+      <HistoryChart data={posts.data} users={checked} />
+      <div className="flex flex-col justify-center item-center p-5">
+        {posts.users.map((user, index) => (
+          <div key={index}>
+            <input
+              value={user}
+              type="checkbox"
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span>{user}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

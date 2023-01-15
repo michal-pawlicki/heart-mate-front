@@ -1,27 +1,16 @@
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
-import io from "socket.io-client";
 import { useSocket } from "../service/socket";
 import HeartRateChart from "../components/HeartRateChart";
 
 const Session = () => {
-  const [data, setData] = useState([
-    { value: 110 },
-    { value: 120 },
-    { value: 130 },
-    { value: 100 },
-    { value: 150 },
-    { value: 190 },
-    { value: 90 },
-  ]);
+  const [data, setData] = useState([]);
 
   const [working, setWorking] = useState(false);
 
   const [name, setName] = useState("Change Name");
 
-  const handleReset = () => {
-    setData([]);
-  };
+  const socket = useSocket();
 
   const mean = useMemo(
     () =>
@@ -33,12 +22,6 @@ const Session = () => {
     [data]
   );
 
-  const socket = useSocket();
-
-  const changeUsername = () => {
-    setName(prompt("enter your name"));
-  };
-
   useEffect(() => {
     if (working) {
       socket.on("pulse", (val) => {
@@ -49,6 +32,10 @@ const Session = () => {
       socket.off("pulse");
     }
   }, [working, socket]);
+
+  const changeUsername = () => {
+    setName(prompt("enter your name"));
+  };
 
   const handleStart = () => {
     setWorking(true);
@@ -65,6 +52,10 @@ const Session = () => {
         value: { mean },
       }),
     });
+  };
+
+  const handleReset = () => {
+    setData([]);
   };
 
   return (

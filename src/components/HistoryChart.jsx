@@ -9,10 +9,6 @@ import {
   Tooltip,
 } from "recharts";
 
-const Tick = () => {
-  return <div />;
-};
-
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
@@ -25,7 +21,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const HeartRateChart = (props) => {
+const HistoryChart = (props) => {
   const [[height, width], setSize] = useState([
     window.innerHeight,
     window.innerWidth,
@@ -53,22 +49,24 @@ const HeartRateChart = (props) => {
     <LineChart
       width={calcWidth}
       height={calcHeight}
-      data={props.data.slice(0, 21)}
+      data={props.data}
       margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
     >
-      <Line
-        type="monotone"
-        dataKey="value"
-        stroke="#9333ea"
-        isAnimationActive={false}
-      />
-      <CartesianGrid stroke="#ccc" />
-      <XAxis domain={[0, 10]} reversed={true} tick={Tick} />
+      {props.users.map((user) => (
+        <Line
+          type="monotone"
+          dataKey={user}
+          stroke={"#" + Math.floor(Math.random() * 16777215).toString(16)}
+        />
+      ))}
 
-      <YAxis domain={[30, 300]} tickCount={10}></YAxis>
-      <Tooltip content={<CustomTooltip />} />
+      <CartesianGrid stroke="#ccc" />
+      <XAxis dataKey="date" />
+
+      <YAxis />
+      <Tooltip />
     </LineChart>
   );
 };
 
-export default HeartRateChart;
+export default HistoryChart;
