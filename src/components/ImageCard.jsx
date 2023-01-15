@@ -1,40 +1,54 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
+import React from "react";
+import { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
 
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import { Collapse } from '@material-ui/core';
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Typography from "@material-ui/core/Typography";
+import { Collapse } from "@material-ui/core";
 
 const useStyles = makeStyles({
   root: {
     maxWidth: 645,
-    background: 'rgba(0,0,0,0.5)',
-    margin: '20px',
+    background: "rgba(0,0,0,0.5)",
+    margin: "20px",
   },
   media: {
     height: 440,
   },
   title: {
-    fontFamily: 'Nunito',
-    fontWeight: 'bold',
-    fontSize: '2rem',
-    color: '#fff',
+    fontWeight: "bold",
+    fontSize: "2rem",
+    color: "#fff",
   },
   desc: {
-    fontFamily: 'Nunito',
-    fontSize: '1.1rem',
-    color: '#ddd',
+    fontSize: "1.1rem",
+    color: "#ddd",
+  },
+  cardHovered: {
+    transform: "scale3d(1.05, 1.05, 1)",
   },
 });
 
 const ImageCard = ({ place, checked }) => {
   const classes = useStyles();
 
+  const [state, setState] = useState({
+    raised: false,
+    shadow: 1,
+  });
+
   return (
     <Collapse in={checked} {...(checked ? { timeout: 1000 } : {})}>
-      <Card className={classes.root}>
+      <Card
+        className={classes.root}
+        classes={{ root: state.raised ? classes.cardHovered : "" }}
+        onMouseOver={() => setState({ raised: true, shadow: 3 })}
+        onMouseOut={() => setState({ raised: false, shadow: 1 })}
+        raised={state.raised}
+        zdepth={state.shadow}
+      >
         <CardMedia
           className={classes.media}
           image={place.imageUrl}
@@ -61,5 +75,5 @@ const ImageCard = ({ place, checked }) => {
       </Card>
     </Collapse>
   );
-}
+};
 export default ImageCard;

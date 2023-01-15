@@ -1,9 +1,16 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HistoryChart from "../components/HistoryChart";
 
 const Browse = () => {
-  // const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState({
+    users: ["Jim", "Mike"],
+    data: [
+      { date: 2010, Jim: 20, Mike: 10 },
+      { date: 2011, Jim: 10, Mike: 20 },
+      { date: 2012, Jim: 11, Mike: 12 },
+    ],
+  });
 
   // useEffect(() => {
   //   fetch("http://192.168.1.55/measurements")
@@ -16,15 +23,6 @@ const Browse = () => {
   //       console.log(err.message);
   //     });
   // }, []);
-
-  const posts = {
-    users: ["Jim", "Mike"],
-    data: [
-      { date: 2010, Jim: 20, Mike: 10 },
-      { date: 2011, Jim: 10, Mike: 20 },
-      { date: 2012, Jim: 11, Mike: 12 },
-    ],
-  };
 
   const [checked, setChecked] = useState([]);
 
