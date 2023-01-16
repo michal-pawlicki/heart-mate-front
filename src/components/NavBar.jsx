@@ -7,7 +7,7 @@ const NavBar = () => {
       <div className="grid grid-cols-2 content-center h-full">
         {" "}
         <div className="text-4xl flex">
-          <h1>Heart</h1> <p style={{ color: "#DF6363" }}> {"\xa0Mate"}</p>
+          <h1>Heart</h1> <p style={{ color: "#DF6363" }}>{"Mate"}</p>
         </div>
         <div className="grid grid-flow-col justify-self-end self-center gap-5">
           <Link to="/">Home</Link>

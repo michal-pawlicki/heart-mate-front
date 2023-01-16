@@ -59,7 +59,7 @@ const Header = () => {
       >
         <div className={"text-5xl md:text-6xl"}>
           <h1>
-            Heart <span className={classes.colorText}>Mate</span><br />
+            Heart<span className={classes.colorText}>Mate</span><br />
             <span className={classes.subtitle}>Your Heart's personal assistant</span>
           </h1>
           <Scroll to="what-to-do" smooth={true}>
