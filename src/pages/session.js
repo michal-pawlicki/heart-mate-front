@@ -6,13 +6,13 @@ import HeartRateChart from "../components/HeartRateChart";
 
 const Session = () => {
   const [data, setData] = useState([
-    { value: 110 },
-    { value: 120 },
-    { value: 130 },
-    { value: 100 },
-    { value: 150 },
-    { value: 190 },
-    { value: 90 },
+    // { value: 110 },
+    // { value: 120 },
+    // { value: 130 },
+    // { value: 100 },
+    // { value: 150 },
+    // { value: 190 },
+    // { value: 90 },
   ]);
 
   const [working, setWorking] = useState(false);
@@ -41,12 +41,12 @@ const Session = () => {
 
   useEffect(() => {
     if (working) {
-      socket.on("pulse", (val) => {
-        setData((previous) => [{ value: val }, ...previous]);
-        console.log(val);
+      socket.on("updateSensorData", (msg) => {
+        console.log(parseInt(msg.value));
+        setData((previous) => [{ value: parseInt(msg.value) }, ...previous]);
       });
     } else {
-      socket.off("pulse");
+      socket.off("updateSensorData");
     }
   }, [working, socket]);
 
@@ -57,12 +57,15 @@ const Session = () => {
   const handleStop = () => {
     setWorking(false);
     const date = new Date();
-    fetch("192.168.1.55/add_measurement", {
+    fetch("http://192.168.1.55/add_measurement", {
       method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        name: { name },
-        date: { date },
-        value: { mean },
+        name: name,
+        date: date.toISOString().split("T")[0],
+        value: mean,
       }),
     });
   };

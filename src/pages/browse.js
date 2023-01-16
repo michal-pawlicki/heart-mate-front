@@ -15,7 +15,12 @@ const Browse = () => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetch("http://192.168.1.55/measurements")
+    fetch("http://192.168.1.55/measurements", {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
